@@ -10,12 +10,13 @@ var DIRECTORY = {
  * Pexels API wrapper which exposes Promise factories to interact with the Pexels API endpoints
  * @param {string} apiKey API Key provided by Pexels (Required)
  */
-function PexelsApi(apiKey) {
+function PexelsApi(apiKey, getTags) {
     if (!apiKey) {
         throw new Error("API Key missing");
     }
     var self = this;
     self.apiKey = apiKey;
+    self.getTags = getTags;
     self.headers = {
         'Authorization': apiKey
     };
@@ -33,7 +34,8 @@ PexelsApi.prototype.search = function (query, perPage, page) {
     var url = DIRECTORY.SEARCH_URL +
         "?query=" + (query ? encodeURIComponent(query) : "") +
         "&per_page=" + (perPage && !isNaN(perPage) ? +perPage : 10) +
-        "&page=" + (page && !isNaN(page) ? +page : 1);
+        "&page=" + (page && !isNaN(page) ? +page : 1) +
+        "&tags=" + (self.getTags ? "true" : "false");
     return fetch(url, {
             headers: self.headers
         })
@@ -53,7 +55,8 @@ PexelsApi.prototype.getPopularPhotos = function (perPage, page) {
     var self = this;
     var url = DIRECTORY.POPULAR_URL +
         "?per_page=" + (perPage && !isNaN(perPage) ? +perPage : 10) +
-        "&page=" + (page && !isNaN(page) ? +page : 1);
+        "&page=" + (page && !isNaN(page) ? +page : 1) +
+        "&tags=" + (self.getTags ? "true" : "false");
     return fetch(url, {
             headers: self.headers
         })
@@ -73,7 +76,8 @@ PexelsApi.prototype.getCuratedPhotos = function (perPage, page) {
     var self = this;
     var url = DIRECTORY.CURATED_URL +
         "?per_page=" + (perPage && !isNaN(perPage) ? +perPage : 10) +
-        "&page=" + (page && !isNaN(page) ? +page : 1);
+        "&page=" + (page && !isNaN(page) ? +page : 1) +
+        "&tags=" + (self.getTags ? "true" : "false");
     return fetch(url, {
             headers: self.headers
         })
